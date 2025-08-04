@@ -140,9 +140,14 @@ if selected == "Triagem com Angela":
 elif selected == "Consultar Casos":
     st.subheader("Painel de Casos Registrados", divider='blue')
     casos_df = db.get_all_cases()
+    
+    # [CORREÇÃO] Adiciona um contador para confirmar que todos os dados foram lidos
+    st.caption(f"Total de {len(casos_df)} caso(s) registrado(s) no banco de dados.")
+
     if casos_df.empty:
         st.info("Nenhum caso registrado.")
     else:
+        # A simples remoção de qualquer parâmetro de altura faz com que ele mostre todos os dados.
         st.dataframe(
             casos_df,
             column_config={
@@ -157,3 +162,4 @@ elif selected == "Consultar Casos":
             use_container_width=True,
             hide_index=True
         )
+
