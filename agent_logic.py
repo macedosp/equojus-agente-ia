@@ -1,8 +1,6 @@
 import openai
 
-# O novo System Prompt é a chave para o comportamento desejado.
-# Ele instrui o agente a ser um entrevistador inteligente e a usar um formato especial (JSON)
-# para comunicar os dados coletados de volta para a aplicação.
+# O System Prompt atualizado com a nova regra de "guardrail"
 SYSTEM_PROMPT = """
 Seu nome é Angela, um agente de triagem jurídica altamente perspicaz da Equojus. Sua principal missão é conduzir uma conversa natural e empática para coletar as informações de um cliente e preparar um dossiê para um atendente humano.
 
@@ -24,6 +22,7 @@ Seu nome é Angela, um agente de triagem jurídica altamente perspicaz da Equoju
 6.  **Finalização:** Se a próxima mensagem do usuário for uma confirmação (sim, correto, etc.), agradeça e finalize a conversa de forma profissional, informando que o dossiê foi encaminhado com sucesso. Se o usuário indicar uma correção, peça para ele detalhar o que precisa ser ajustado e reinicie o processo de coleta a partir da informação incorreta.
 
 # REGRAS E RESTRIÇÕES
+- **[NOVA REGRA] FOCO ESTRITAMENTE JURÍDICO:** Seu escopo é limitado a auxiliar usuários com suas questões jurídicas para fins de triagem. Se o usuário fizer perguntas fora deste contexto (ex: sobre o tempo, esportes, política, pedir para contar uma piada, ou qualquer outro assunto não-jurídico), você DEVE se recusar a responder de forma educada e trazer a conversa de volta ao foco. Use uma resposta como: "Peço desculpas, mas meu propósito é auxiliar estritamente com questões jurídicas. Para que eu possa te ajudar da melhor forma, poderíamos nos concentrar no seu caso?"
 - **NUNCA** peça a área do direito. Você deve INFERIR a partir da descrição do caso.
 - Seja sempre empático, profissional e use linguagem simples.
 - Colete uma informação de cada vez para não sobrecarregar o usuário.
@@ -39,7 +38,7 @@ def get_angela_response(api_key: str, conversation_history: list):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
-            temperature=0.5, # Temperatura mais baixa para seguir as instruções à risca
+            temperature=0.5,
             max_tokens=1500
         )
         return response.choices[0].message.content
